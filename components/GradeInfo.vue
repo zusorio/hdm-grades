@@ -17,12 +17,6 @@ const weightedBaseAverage = computed(() => {
     .filter((grade) => grade.grade !== null && grade.degree_part === "base")
     .reduce((acc, grade) => acc + grade.ects, 0);
 
-  console.log(
-    props.grades.filter(
-      (grade) => grade.grade !== null && grade.degree_part === "base",
-    ),
-  );
-
   return (
     props.grades
       .filter((grade) => grade.grade !== null && grade.degree_part === "base")
@@ -46,7 +40,7 @@ const weightedMainAverage = computed(() => {
 const semestersWorkload = computed(() => {
   return semesters.value.map((semester) => {
     const ects = props.grades
-      .filter((grade) => grade.semester === semester)
+      .filter((grade) => grade.semester === semester && grade.grade !== null)
       .reduce((acc, grade) => acc + grade.ects, 0);
     return {
       semester,
@@ -56,8 +50,13 @@ const semestersWorkload = computed(() => {
         .reduce((acc, grade) => acc + grade.sws, 0),
       weightedAverage:
         props.grades
-          .filter((grade) => grade.semester === semester)
+          .filter(
+            (grade) => grade.semester === semester && grade.grade !== null,
+          )
           .reduce((acc, grade) => acc + grade.grade * grade.ects, 0) / ects,
+      hasPending: props.grades.some(
+        (grade) => grade.semester === semester && grade.passed === "signed_up",
+      ),
     };
   });
 });
@@ -97,7 +96,10 @@ const semestersWorkload = computed(() => {
         v-for="semester in semestersWorkload"
         :key="semester.semester"
       >
-        <h2 class="font-medium">{{ semester.semester }}</h2>
+        <h2 class="font-medium">
+          {{ semester.semester }}
+          {{ semester.hasPending ? "(nicht abgeschlossen)" : "" }}
+        </h2>
         <div class="grid grid-cols-3">
           <div>
             <div class="font-bold text-xl">
