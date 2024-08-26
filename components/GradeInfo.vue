@@ -64,6 +64,21 @@ const semestersWorkload = computed(() => {
     };
   });
 });
+
+const manualBaseGrade = ref<number>(
+  parseFloat(weightedBaseAverage.value.toFixed(3)),
+);
+const manualMainGrade = ref<number>(
+  parseFloat(weightedMainAverage.value.toFixed(3)),
+);
+const manualThesisGrade = ref<number>(1.0);
+const finalGrade = computed(() => {
+  return (
+    manualMainGrade.value * 0.7 +
+    manualBaseGrade.value * 0.15 +
+    manualThesisGrade.value * 0.15
+  );
+});
 </script>
 
 <template>
@@ -130,6 +145,55 @@ const semestersWorkload = computed(() => {
         </div>
       </div>
     </div>
+
+    <div>
+      <h2 class="font-medium text-lg">Abschlussnotenrechner</h2>
+      <div class="space-y-2">
+        <label class="block">
+          <span class="font-medium">Grundstudium: </span>
+          <input
+            class="px-1 rounded-sm"
+            type="number"
+            min="1.000"
+            max="5.000"
+            step="0.100"
+            pattern="[0-9]*"
+            inputmode="numeric"
+            v-model="manualBaseGrade"
+          />
+        </label>
+        <label class="block">
+          <span class="font-medium">Hauptstudium: </span>
+          <input
+            class="px-1 rounded-sm"
+            type="number"
+            min="1.000"
+            max="5.000"
+            step="0.100"
+            pattern="[0-9]*"
+            inputmode="numeric"
+            v-model="manualMainGrade"
+          />
+        </label>
+        <label class="block">
+          <span class="font-medium">Thesis: </span>
+          <input
+            class="px-1 rounded-sm"
+            type="number"
+            min="1.000"
+            max="5.000"
+            step="0.100"
+            pattern="[0-9]*"
+            inputmode="numeric"
+            v-model="manualThesisGrade"
+          />
+        </label>
+        <div class="font-bold text-xl">
+          {{ finalGrade.toFixed(3) }}
+        </div>
+      </div>
+    </div>
+
     <div class="text-sm">
       <span class="font-bold">
         ALLE ANGABE OHNE GEWÄHR. KEINE GARANTIE AUF RICHTIGKEIT. ZUM ÜBERPRÜFEN
