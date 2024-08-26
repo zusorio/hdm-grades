@@ -40,6 +40,9 @@ const weightedMainAverage = computed(() => {
 const semestersWorkload = computed(() => {
   return semesters.value.map((semester) => {
     const ects = props.grades
+      .filter((grade) => grade.semester === semester)
+      .reduce((acc, grade) => acc + grade.ects, 0);
+    const gradedEcts = props.grades
       .filter((grade) => grade.semester === semester && grade.grade !== null)
       .reduce((acc, grade) => acc + grade.ects, 0);
     return {
@@ -53,7 +56,8 @@ const semestersWorkload = computed(() => {
           .filter(
             (grade) => grade.semester === semester && grade.grade !== null,
           )
-          .reduce((acc, grade) => acc + grade.grade * grade.ects, 0) / ects,
+          .reduce((acc, grade) => acc + grade.grade * grade.ects, 0) /
+        gradedEcts,
       hasPending: props.grades.some(
         (grade) => grade.semester === semester && grade.passed === "signed_up",
       ),

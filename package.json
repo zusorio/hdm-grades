@@ -1,7 +1,7 @@
 {
   "name": "hdm-grades",
   "private": true,
-  "version": "1.0.1",
+  "version": "1.0.2",
   "type": "module",
   "license": "MIT",
   "scripts": {
@@ -16,11 +16,11 @@
   },
   "dependencies": {
     "luxon": "^3.5.0",
-    "vue": "^3.4.34"
+    "vue": "^3.4.38"
   },
   "devDependencies": {
     "@types/luxon": "^3.4.2",
-    "@wxt-dev/module-vue": "^1.0.0",
+    "@wxt-dev/module-vue": "^1.0.1",
     "autoprefixer": "^10.4.20",
     "postcss": "^8.4.41",
     "prettier": "^3.3.3",
@@ -28,7 +28,7 @@
     "tailwindcss": "^3.4.10",
     "typescript": "^5.5.4",
     "vue-tsc": "^2.0.29",
-    "wxt": "^0.19.1"
+    "wxt": "^0.19.7"
   },
   "packageManager": "pnpm@9.4.0+sha256.b6fd0bfda555e7e584ad7e56b30c68b01d5a04f9ee93989f4b93ca8473c49c74"
 }
