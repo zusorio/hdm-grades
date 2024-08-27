@@ -48,6 +48,8 @@ const semestersWorkload = computed(() => {
     return {
       semester,
       ects,
+      classes: props.grades.filter((grade) => grade.semester === semester)
+        .length,
       sws: props.grades
         .filter((grade) => grade.semester === semester)
         .reduce((acc, grade) => acc + grade.sws, 0),
@@ -58,7 +60,7 @@ const semestersWorkload = computed(() => {
           )
           .reduce((acc, grade) => acc + grade.grade * grade.ects, 0) /
         gradedEcts,
-      hasPending: props.grades.some(
+      pending: props.grades.filter(
         (grade) => grade.semester === semester && grade.passed === "signed_up",
       ),
     };
@@ -111,32 +113,32 @@ const finalGrade = computed(() => {
 <template>
   <div class="p-2 space-y-2">
     <div class="grid grid-cols-2 md:grid-cols-4 gap-2">
-      <div class="p-2 bg-white">
+      <div class="p-2 bg-white rounded-sm">
         <div class="font-bold text-xl">
           {{ ectsSum }}
         </div>
         <div>∑ ECTS</div>
       </div>
-      <div class="p-2 bg-white">
+      <div class="p-2 bg-white rounded-sm">
         <div class="font-bold text-xl">
           {{ ectsSum / semesters.length }}
         </div>
         <div>Ø ECTS / Semester</div>
       </div>
-      <div class="p-2 bg-white">
+      <div class="p-2 bg-white rounded-sm">
         <div class="font-bold text-xl">
           {{ weightedBaseAverage.toFixed(3) }}
         </div>
         <div>Ø Note Grundstudium</div>
       </div>
-      <div class="p-2 bg-white">
+      <div class="p-2 bg-white rounded-sm">
         <div class="font-bold text-xl">
           {{ weightedMainAverage.toFixed(3) }}
         </div>
         <div>Ø Note Hauptstudium</div>
       </div>
     </div>
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-2">
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-2">
       <div
         class="p-2 bg-white rounded-sm"
         v-for="semester in semestersWorkload"
@@ -144,9 +146,9 @@ const finalGrade = computed(() => {
       >
         <h2 class="font-medium">
           {{ semester.semester }}
-          {{ semester.hasPending ? "(nicht abgeschlossen)" : "" }}
+          {{ semester.pending.length > 0 ? "(nicht abgeschlossen)" : "" }}
         </h2>
-        <div class="grid grid-cols-3">
+        <div class="grid grid-cols-4">
           <div>
             <div class="font-bold text-xl">
               {{ semester.ects }}
@@ -158,6 +160,14 @@ const finalGrade = computed(() => {
               {{ semester.sws }}
             </div>
             <div>SWS</div>
+          </div>
+          <div>
+            <div class="font-bold text-xl">
+              {{ semester.classes - semester.pending.length }}/{{
+                semester.classes
+              }}
+            </div>
+            <div>Bewertet</div>
           </div>
           <div>
             <div class="font-bold text-xl">
@@ -177,7 +187,7 @@ const finalGrade = computed(() => {
       <h2 class="font-medium text-lg">Abschlussnotenrechner</h2>
 
       <div class="grid grid-cols-2 md:grid-cols-4 gap-2">
-        <label class="p-2 bg-white">
+        <label class="p-2 bg-white rounded-sm">
           <input
             class="rounded-sm pl-1 focus:outline-none focus-visible:border-black border-2 border-dashed font-bold text-xl"
             type="number"
@@ -191,7 +201,7 @@ const finalGrade = computed(() => {
 
           <span class="block">Grundstudium</span>
         </label>
-        <label class="p-2 bg-white">
+        <label class="p-2 bg-white rounded-sm">
           <input
             class="rounded-sm pl-1 focus:outline-none focus-visible:border-black border-2 border-dashed font-bold text-xl"
             type="number"
@@ -205,7 +215,7 @@ const finalGrade = computed(() => {
 
           <span class="block">Hauptstudium</span>
         </label>
-        <label class="p-2 bg-white">
+        <label class="p-2 bg-white rounded-sm">
           <input
             class="rounded-sm pl-1 focus:outline-none focus-visible:border-black border-2 border-dashed font-bold text-xl"
             type="number"
@@ -219,7 +229,7 @@ const finalGrade = computed(() => {
 
           <span class="block">Thesis</span>
         </label>
-        <div class="p-2 bg-white">
+        <div class="p-2 bg-white rounded-sm">
           <div class="font-bold text-xl">
             {{ finalGrade.toFixed(3) }}
           </div>
