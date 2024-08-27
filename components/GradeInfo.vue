@@ -64,6 +64,48 @@ const semestersWorkload = computed(() => {
     };
   });
 });
+
+// cut down to one decimal place without rounding
+// this is how the SPO does it
+const manualBaseGrade = ref<number>(
+  parseFloat(weightedBaseAverage.value.toFixed(2).slice(0, -1)),
+);
+const manualMainGrade = ref<number>(
+  parseFloat(weightedMainAverage.value.toFixed(2).slice(0, -1)),
+);
+const manualThesisGrade = ref<number>(1.0);
+
+watchEffect(() => {
+  if (manualBaseGrade.value < 1.0) {
+    manualBaseGrade.value = 1.0;
+  } else if (manualBaseGrade.value > 5.0) {
+    manualBaseGrade.value = 5.0;
+  }
+});
+
+watchEffect(() => {
+  if (manualMainGrade.value < 1.0) {
+    manualMainGrade.value = 1.0;
+  } else if (manualMainGrade.value > 5.0) {
+    manualMainGrade.value = 5.0;
+  }
+});
+
+watchEffect(() => {
+  if (manualThesisGrade.value < 1.0) {
+    manualThesisGrade.value = 1.0;
+  } else if (manualThesisGrade.value > 5.0) {
+    manualThesisGrade.value = 5.0;
+  }
+});
+
+const finalGrade = computed(() => {
+  return (
+    manualMainGrade.value * 0.7 +
+    manualBaseGrade.value * 0.15 +
+    manualThesisGrade.value * 0.15
+  );
+});
 </script>
 
 <template>
@@ -130,6 +172,62 @@ const semestersWorkload = computed(() => {
         </div>
       </div>
     </div>
+
+    <div>
+      <h2 class="font-medium text-lg">Abschlussnotenrechner</h2>
+
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-2">
+        <label class="p-2 bg-white">
+          <input
+            class="rounded-sm pl-1 focus:outline-none focus-visible:border-black border-2 border-dashed font-bold text-xl"
+            type="number"
+            min="1.0"
+            max="5.0"
+            step="0.1"
+            pattern="[0-9]*"
+            inputmode="numeric"
+            v-model="manualBaseGrade"
+          />
+
+          <span class="block">Grundstudium</span>
+        </label>
+        <label class="p-2 bg-white">
+          <input
+            class="rounded-sm pl-1 focus:outline-none focus-visible:border-black border-2 border-dashed font-bold text-xl"
+            type="number"
+            min="1.0"
+            max="5.0"
+            step="0.1"
+            pattern="[0-9]*"
+            inputmode="numeric"
+            v-model="manualMainGrade"
+          />
+
+          <span class="block">Hauptstudium</span>
+        </label>
+        <label class="p-2 bg-white">
+          <input
+            class="rounded-sm pl-1 focus:outline-none focus-visible:border-black border-2 border-dashed font-bold text-xl"
+            type="number"
+            min="1.0"
+            max="5.0"
+            step="0.1"
+            pattern="[0-9]*"
+            inputmode="numeric"
+            v-model="manualThesisGrade"
+          />
+
+          <span class="block">Thesis</span>
+        </label>
+        <div class="p-2 bg-white">
+          <div class="font-bold text-xl">
+            {{ finalGrade.toFixed(3) }}
+          </div>
+          <div>Endnote</div>
+        </div>
+      </div>
+    </div>
+
     <div class="text-sm">
       <span class="font-bold">
         ALLE ANGABE OHNE GEWÄHR. KEINE GARANTIE AUF RICHTIGKEIT. ZUM ÜBERPRÜFEN
