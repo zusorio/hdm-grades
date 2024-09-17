@@ -70,10 +70,10 @@ const semestersWorkload = computed(() => {
 // cut down to one decimal place without rounding
 // this is how the SPO does it
 const manualBaseGrade = ref<number>(
-  parseFloat(weightedBaseAverage.value.toFixed(2).slice(0, -1)),
+  parseFloat(weightedBaseAverage.value.toFixed(3).slice(0, -2)),
 );
 const manualMainGrade = ref<number>(
-  parseFloat(weightedMainAverage.value.toFixed(2).slice(0, -1)),
+  parseFloat(weightedMainAverage.value.toFixed(3).slice(0, -2)),
 );
 const manualThesisGrade = ref<number>(1.0);
 
